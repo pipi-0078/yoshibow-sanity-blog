@@ -5,6 +5,7 @@ import { client } from "@/sanity/client";
 import Link from "next/link";
 import Image from "next/image";
 import { Metadata } from "next";
+import { portableTextComponents } from "@/components/PortableTextComponents";
 
 const POST_QUERY = `*[_type == "post" && slug.current == $slug][0]{
   _id,
@@ -139,8 +140,13 @@ export default async function PostPage({
         )}
 
         <div className="bg-white rounded-lg shadow-sm p-6 sm:p-8 lg:p-12">
-          <div className="prose prose-lg max-w-none prose-headings:text-gray-900 prose-p:text-gray-700 prose-a:text-blue-600 hover:prose-a:text-blue-800 prose-strong:text-gray-900 prose-code:text-pink-600 prose-code:bg-gray-100 prose-code:px-1 prose-code:rounded">
-            {Array.isArray(post.body) && <PortableText value={post.body} />}
+          <div className="max-w-none">
+            {Array.isArray(post.body) && (
+              <PortableText 
+                value={post.body} 
+                components={portableTextComponents}
+              />
+            )}
           </div>
         </div>
 
