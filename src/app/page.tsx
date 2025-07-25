@@ -182,8 +182,8 @@ export default async function IndexPage() {
             </h2>
             <p className="text-lg text-gray-600 mb-8 leading-relaxed">
               現役僧侶として勤めながら、新しい技術の学習と実践に取り組んでいます。<br className="hidden sm:block" />
-              Sanityとnext.jsでバイブスでブログ運営をすることにに興味があり、<br className="hidden sm:block" />
-              日々の学びや体験をこのブログで共有しています。
+              Sanityとnext.jsでバイブスでブログ運営をすることに興味があり、<br className="hidden sm:block" />
+              日々の学びや体験を共有しています。
             </p>
             <div className="flex flex-wrap justify-center gap-3">
               <span className="px-4 py-2 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">React</span>
