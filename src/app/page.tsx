@@ -181,8 +181,8 @@ export default async function IndexPage() {
               About Yoshibow
             </h2>
             <p className="text-lg text-gray-600 mb-8 leading-relaxed">
-              フロントエンドエンジニアとして働きながら、新しい技術の学習と実践に取り組んでいます。<br className="hidden sm:block" />
-              React、Next.js、TypeScriptを中心とした現代的なWeb開発技術に興味があり、<br className="hidden sm:block" />
+              現役僧侶として勤めながら、新しい技術の学習と実践に取り組んでいます。<br className="hidden sm:block" />
+              Sanityとnext.jsでバイブスでブログ運営をすることにに興味があり、<br className="hidden sm:block" />
               日々の学びや体験をこのブログで共有しています。
             </p>
             <div className="flex flex-wrap justify-center gap-3">
