@@ -3,6 +3,7 @@ import { PortableTextComponents } from "@portabletext/react";
 import imageUrlBuilder from "@sanity/image-url";
 import type { SanityImageSource } from "@sanity/image-url/lib/types/types";
 import { client } from "@/sanity/client";
+import { createSlug } from "@/utils/toc";
 
 const { projectId, dataset } = client.config();
 const urlFor = (source: SanityImageSource) =>
@@ -10,7 +11,9 @@ const urlFor = (source: SanityImageSource) =>
     ? imageUrlBuilder({ projectId, dataset }).image(source)
     : null;
 
-export const portableTextComponents: PortableTextComponents = {
+// 見出しにIDを追加するためのヘルパー関数
+function createPortableTextComponents(content: any[] = []): PortableTextComponents {
+  return {
   types: {
     image: ({ value }) => {
       const imageUrl = urlFor(value)?.width(800).height(450).url();
@@ -60,12 +63,34 @@ export const portableTextComponents: PortableTextComponents = {
     h1: ({ children }) => (
       <h1 className="text-3xl font-bold text-gray-900 mt-8 mb-4">{children}</h1>
     ),
-    h2: ({ children }) => (
-      <h2 className="text-2xl font-bold text-gray-900 mt-6 mb-3">{children}</h2>
-    ),
-    h3: ({ children }) => (
-      <h3 className="text-xl font-bold text-gray-900 mt-5 mb-2">{children}</h3>
-    ),
+    h2: ({ children, value }) => {
+      const text = value?.children?.map((child: any) => child.text).join('') || '';
+      const blockIndex = content.findIndex(block => 
+        block._type === 'block' && 
+        block.style === 'h2' && 
+        block.children?.map((child: any) => child.text).join('') === text
+      );
+      const id = createSlug(text, blockIndex);
+      return (
+        <h2 id={id} className="text-2xl font-bold text-gray-900 mt-6 mb-3 scroll-mt-4">
+          {children}
+        </h2>
+      );
+    },
+    h3: ({ children, value }) => {
+      const text = value?.children?.map((child: any) => child.text).join('') || '';
+      const blockIndex = content.findIndex(block => 
+        block._type === 'block' && 
+        block.style === 'h3' && 
+        block.children?.map((child: any) => child.text).join('') === text
+      );
+      const id = createSlug(text, blockIndex);
+      return (
+        <h3 id={id} className="text-xl font-bold text-gray-900 mt-5 mb-2 scroll-mt-4">
+          {children}
+        </h3>
+      );
+    },
     h4: ({ children }) => (
       <h4 className="text-lg font-bold text-gray-900 mt-4 mb-2">{children}</h4>
     ),
@@ -127,4 +152,11 @@ export const portableTextComponents: PortableTextComponents = {
       </a>
     ),
   },
-};
+  };
+}
+
+// デフォルトエクスポート用（後方互換性のため）
+export const portableTextComponents = createPortableTextComponents();
+
+// 目次機能付きコンポーネント
+export { createPortableTextComponents };

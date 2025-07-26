@@ -1,11 +1,11 @@
-import { PortableText, type SanityDocument } from "next-sanity";
+import { type SanityDocument } from "next-sanity";
 import imageUrlBuilder from "@sanity/image-url";
 import type { SanityImageSource } from "@sanity/image-url/lib/types/types";
 import { client } from "@/sanity/client";
 import Link from "next/link";
 import Image from "next/image";
 import { Metadata } from "next";
-import { portableTextComponents } from "@/components/PortableTextComponents";
+import { ArticleContent } from "@/components/ArticleContent";
 
 const POST_QUERY = `*[_type == "post" && slug.current == $slug][0]{
   _id,
@@ -140,14 +140,9 @@ export default async function PostPage({
         )}
 
         <div className="bg-white rounded-lg shadow-sm p-6 sm:p-8 lg:p-12">
-          <div className="max-w-none">
-            {Array.isArray(post.body) && (
-              <PortableText 
-                value={post.body} 
-                components={portableTextComponents}
-              />
-            )}
-          </div>
+          {Array.isArray(post.body) && (
+            <ArticleContent content={post.body} />
+          )}
         </div>
 
         <nav className="mt-12 pt-8 border-t border-gray-200">
