@@ -1,10 +1,11 @@
 import { type SanityDocument } from "next-sanity";
 import imageUrlBuilder from "@sanity/image-url";
 import type { SanityImageSource } from "@sanity/image-url/lib/types/types";
-import { client } from "@/sanity/client";
+import { client, previewClient } from "@/sanity/client";
 import Link from "next/link";
 import Image from "next/image";
 import { Metadata } from "next";
+import { draftMode } from "next/headers";
 import { ArticleContent } from "@/components/ArticleContent";
 
 const POST_QUERY = `*[_type == "post" && slug.current == $slug][0]{
@@ -15,6 +16,17 @@ const POST_QUERY = `*[_type == "post" && slug.current == $slug][0]{
   image,
   body
 }`;
+
+// プレビューモード用のクエリ（下書きも含む）
+const PREVIEW_POST_QUERY = `*[_type == "post" && slug.current == $slug]{
+  _id,
+  title,
+  slug,
+  publishedAt,
+  image,
+  body,
+  _updatedAt
+} | order(_updatedAt desc)[0]`;
 
 const { projectId, dataset } = client.config();
 const urlFor = (source: SanityImageSource) =>
@@ -29,7 +41,10 @@ export async function generateMetadata({
 }: {
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
-  const post = await client.fetch<SanityDocument>(POST_QUERY, await params, options);
+  const { isEnabled } = draftMode();
+  const currentClient = isEnabled ? previewClient : client;
+  const query = isEnabled ? PREVIEW_POST_QUERY : POST_QUERY;
+  const post = await currentClient.fetch<SanityDocument>(query, await params, options);
   
   if (!post) {
     return {
@@ -71,7 +86,10 @@ export default async function PostPage({
 }: {
   params: Promise<{ slug: string }>;
 }) {
-  const post = await client.fetch<SanityDocument>(POST_QUERY, await params, options);
+  const { isEnabled } = draftMode();
+  const currentClient = isEnabled ? previewClient : client;
+  const query = isEnabled ? PREVIEW_POST_QUERY : POST_QUERY;
+  const post = await currentClient.fetch<SanityDocument>(query, await params, options);
   
   if (!post) {
     return (

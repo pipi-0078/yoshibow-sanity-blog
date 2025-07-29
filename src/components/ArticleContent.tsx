@@ -4,7 +4,7 @@ import { createPortableTextComponents } from "./PortableTextComponents";
 import { TableOfContents } from "./TableOfContents";
 
 interface ArticleContentProps {
-  content: any[];
+  content: unknown[];
 }
 
 export function ArticleContent({ content }: ArticleContentProps) {
@@ -20,7 +20,7 @@ export function ArticleContent({ content }: ArticleContentProps) {
   const shouldShowToc = tocItems.filter(item => item.level === 2).length >= 2;
   
   // 最初のH2見出しの前に目次を挿入
-  let contentWithToc = [...content];
+  const contentWithToc = [...content];
   if (shouldShowToc && firstH2Index >= 0) {
     // 目次用の特別なブロックを作成
     const tocBlock = {
@@ -41,7 +41,7 @@ export function ArticleContent({ content }: ArticleContentProps) {
     ...components,
     types: {
       ...components.types,
-      tableOfContents: ({ value }: { value: { items: any[] } }) => (
+      tableOfContents: ({ value }: { value: { items: unknown[] } }) => (
         <TableOfContents items={value.items} />
       ),
     },
