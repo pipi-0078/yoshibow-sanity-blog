@@ -4,6 +4,7 @@ import imageUrlBuilder from "@sanity/image-url";
 import type { SanityImageSource } from "@sanity/image-url/lib/types/types";
 import { client } from "@/sanity/client";
 import { createSlug } from "@/utils/toc";
+import CustomTable from "./CustomTable";
 
 const { projectId, dataset } = client.config();
 const urlFor = (source: SanityImageSource) =>
@@ -58,10 +59,13 @@ function createPortableTextComponents(content: any[] = []): PortableTextComponen
         </div>
       );
     },
+    customTable: ({ value }) => {
+      return <CustomTable value={value} />;
+    },
   },
   block: {
     h1: ({ children }) => (
-      <h1 className="text-3xl font-bold text-gray-900 mt-8 mb-4">{children}</h1>
+      <h1 className="text-3xl font-bold mt-8 mb-4">{children}</h1>
     ),
     h2: ({ children, value }) => {
       const text = value?.children?.map((child: any) => child.text).join('') || '';
@@ -72,7 +76,7 @@ function createPortableTextComponents(content: any[] = []): PortableTextComponen
       );
       const id = createSlug(text, blockIndex);
       return (
-        <h2 id={id} className="text-2xl font-bold text-gray-900 mt-6 mb-3 scroll-mt-4">
+        <h2 id={id} className="text-2xl font-bold mt-6 mb-3 scroll-mt-4">
           {children}
         </h2>
       );
@@ -86,13 +90,13 @@ function createPortableTextComponents(content: any[] = []): PortableTextComponen
       );
       const id = createSlug(text, blockIndex);
       return (
-        <h3 id={id} className="text-xl font-bold text-gray-900 mt-5 mb-2 scroll-mt-4">
+        <h3 id={id} className="text-xl font-bold mt-5 mb-2 scroll-mt-4">
           {children}
         </h3>
       );
     },
     h4: ({ children }) => (
-      <h4 className="text-lg font-bold text-gray-900 mt-4 mb-2">{children}</h4>
+      <h4 className="text-lg font-bold mt-4 mb-2">{children}</h4>
     ),
     blockquote: ({ children }) => (
       <blockquote className="border-l-4 border-blue-500 pl-4 py-2 my-4 italic text-gray-700 bg-blue-50 rounded-r-lg">
@@ -100,32 +104,54 @@ function createPortableTextComponents(content: any[] = []): PortableTextComponen
       </blockquote>
     ),
     normal: ({ children }) => (
-      <p className="mb-4 leading-7 text-gray-800">{children}</p>
+      <p className="mb-4 leading-7">{children}</p>
     ),
   },
   list: {
     bullet: ({ children }) => (
-      <ul className="list-disc list-inside mb-4 space-y-2 text-gray-800">
+      <ul style={{
+        listStyleType: 'disc',
+        listStylePosition: 'outside',
+        paddingLeft: '2rem',
+        marginBottom: '1rem'
+      }}>
         {children}
       </ul>
     ),
     number: ({ children }) => (
-      <ol className="list-decimal list-inside mb-4 space-y-2 text-gray-800">
+      <ol style={{
+        listStyleType: 'decimal',
+        listStylePosition: 'outside',
+        paddingLeft: '2rem',
+        marginBottom: '1rem'
+      }}>
         {children}
       </ol>
     ),
   },
   listItem: {
     bullet: ({ children }) => (
-      <li className="ml-4">{children}</li>
+      <li style={{
+        display: 'list-item',
+        marginBottom: '0.5rem',
+        lineHeight: '1.6'
+      }}>
+        {children}
+      </li>
     ),
     number: ({ children }) => (
-      <li className="ml-4">{children}</li>
+      <li style={{
+        display: 'list-item',
+        marginBottom: '0.5rem',
+        lineHeight: '1.6'
+      }}>
+        {children}
+      </li>
     ),
   },
   marks: {
     strong: ({ children }) => (
-      <strong className="font-bold text-gray-900">{children}</strong>
+      <strong className="font-bold">{children}</strong>
     ),
     em: ({ children }) => (
       <em className="italic">{children}</em>
