@@ -67,6 +67,11 @@ body {
   @apply mb-4 leading-7;
 }
 
+/* Portable Textの段落色を強制的に修正 */
+.prose .article-content p {
+  color: var(--foreground) !important;
+}
+
 .prose ul {
   @apply mb-4;
   list-style: disc outside !important;

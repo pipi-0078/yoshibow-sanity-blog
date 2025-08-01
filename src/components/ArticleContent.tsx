@@ -196,7 +196,7 @@ export function ArticleContent({ content }: ArticleContentProps) {
   };
 
   return (
-    <div className="max-w-none article-content">
+    <div className="prose max-w-none article-content">
       {/* PortableTextコンポーネントを直接使用 */}
       <PortableText 
         value={contentWithToc} 
