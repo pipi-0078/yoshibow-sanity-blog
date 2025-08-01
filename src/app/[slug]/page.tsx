@@ -7,14 +7,22 @@ import Image from "next/image";
 import { Metadata } from "next";
 import { draftMode } from "next/headers";
 import { ArticleContent } from "@/components/ArticleContent";
+import PreviewProvider from "@/components/PreviewProvider";
+import PreviewPostComponent from "@/components/PreviewPostComponent";
+import ShareButtons from "@/components/ShareButtons";
+import ClickableImage from "@/components/ClickableImage";
 
 const POST_QUERY = `*[_type == "post" && slug.current == $slug][0]{
   _id,
   title,
   slug,
   publishedAt,
+  _updatedAt,
   image,
-  body
+  body,
+  categories[]->{title, slug},
+  tags,
+  author->{name, image, bio}
 }`;
 
 // プレビューモード用のクエリ（下書きも含む）
@@ -23,9 +31,12 @@ const PREVIEW_POST_QUERY = `*[_type == "post" && slug.current == $slug]{
   title,
   slug,
   publishedAt,
+  _updatedAt,
   image,
   body,
-  _updatedAt
+  categories[]->{title, slug},
+  tags,
+  author->{name, image, bio}
 } | order(_updatedAt desc)[0]`;
 
 const { projectId, dataset } = client.config();
@@ -86,10 +97,25 @@ export default async function PostPage({
 }: {
   params: Promise<{ slug: string }>;
 }) {
+  const { slug } = await params;
   const { isEnabled } = draftMode();
-  const currentClient = isEnabled ? previewClient : client;
-  const query = isEnabled ? PREVIEW_POST_QUERY : POST_QUERY;
-  const post = await currentClient.fetch<SanityDocument>(query, await params, options);
+
+  // プレビューモードの場合
+  if (isEnabled) {
+    const token = process.env.SANITY_API_READ_TOKEN;
+    if (!token) {
+      throw new Error('SANITY_API_READ_TOKEN is required for preview mode');
+    }
+
+    return (
+      <PreviewProvider token={token}>
+        <PreviewPostComponent slug={slug} token={token} />
+      </PreviewProvider>
+    );
+  }
+
+  // 通常モード（公開記事のみ）
+  const post = await client.fetch<SanityDocument>(POST_QUERY, { slug }, options);
   
   if (!post) {
     return (
@@ -130,18 +156,64 @@ export default async function PostPage({
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4 leading-tight">
             {post.title}
           </h1>
-          <div className="flex items-center text-gray-600 mb-6">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-gray-600 mb-4">
             <time 
               dateTime={post.publishedAt}
-              className="text-sm"
+              className="text-sm flex items-center"
             >
-              {new Date(post.publishedAt).toLocaleDateString('ja-JP', {
+              📅 公開: {new Date(post.publishedAt).toLocaleDateString('ja-JP', {
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric'
               })}
             </time>
+            {post._updatedAt && (
+              <time 
+                dateTime={post._updatedAt}
+                className="text-sm flex items-center text-gray-500"
+              >
+                🔄 最終更新: {new Date(post._updatedAt).toLocaleDateString('ja-JP', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                })}
+              </time>
+            )}
           </div>
+          
+          {post.categories && post.categories.length > 0 && (
+            <div className="flex flex-wrap gap-2 mb-6">
+              {post.categories.map((category: any) => (
+                <span
+                  key={category.slug.current}
+                  className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800"
+                >
+                  {category.title}
+                </span>
+              ))}
+            </div>
+          )}
+
+          {/* 著者情報の表示 */}
+          {post.author && (
+            <div className="flex items-center space-x-4 mb-6 p-4 bg-gray-50 rounded-lg">
+              {post.author.image && (
+                <Image
+                  src={urlFor(post.author.image)?.width(48).height(48).fit('crop').url() || ''}
+                  alt={post.author.name || 'author image'}
+                  className="h-12 w-12 rounded-full"
+                  width={48}
+                  height={48}
+                />
+              )}
+              <div>
+                <p className="font-semibold text-gray-900">👤 {post.author.name}</p>
+                {post.author.bio && (
+                  <p className="text-sm text-gray-600">{post.author.bio}</p>
+                )}
+              </div>
+            </div>
+          )}
         </header>
 
         {postImageUrl && (
@@ -154,13 +226,46 @@ export default async function PostPage({
               height={450}
               priority
             />
+            {/* アイキャッチ画像下のコンパクトシェア */}
+            <div className="mt-4 bg-white rounded-lg border border-gray-200 shadow-sm">
+              <ShareButtons 
+                title={post.title}
+                url={`https://vibes-life.yoshi-blog2021.com/${post.slug.current}`}
+                variant="compact"
+              />
+            </div>
           </div>
         )}
 
-        <div className="bg-white rounded-lg shadow-sm p-6 sm:p-8 lg:p-12">
+        <div className="prose max-w-none bg-white rounded-lg shadow-sm p-6 sm:p-8 lg:p-12">
           {Array.isArray(post.body) && (
             <ArticleContent content={post.body} />
           )}
+        </div>
+
+        {/* タグ表示 */}
+        {post.tags && post.tags.length > 0 && (
+          <div className="mt-8 p-6 bg-gray-50 rounded-lg">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">🏷️ タグ</h3>
+            <div className="flex flex-wrap gap-2">
+              {post.tags.map((tag: string, index: number) => (
+                <span
+                  key={index}
+                  className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-200 text-gray-800 hover:bg-gray-300 transition-colors"
+                >
+                  #{tag}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* シェア機能 */}
+        <div className="mt-8">
+          <ShareButtons 
+            title={post.title}
+            url={`https://vibes-life.yoshi-blog2021.com/${post.slug.current}`}
+          />
         </div>
 
         <nav className="mt-12 pt-8 border-t border-gray-200">
