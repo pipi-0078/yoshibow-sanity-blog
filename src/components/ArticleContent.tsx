@@ -87,7 +87,7 @@ export function ArticleContent({ content }: ArticleContentProps) {
         )
       },
       normal: ({ children }: { children: any }) => (
-        <p className="mb-4 text-gray-700 leading-relaxed">{children}</p>
+        <p className="mb-4 leading-relaxed">{children}</p>
       ),
       blockquote: ({ children }: { children: any }) => (
         <blockquote className="border-l-4 border-blue-500 pl-4 py-2 my-6 bg-blue-50 italic text-gray-800">
@@ -101,8 +101,7 @@ export function ArticleContent({ content }: ArticleContentProps) {
           listStyleType: 'disc',
           listStylePosition: 'outside',
           paddingLeft: '2rem',
-          marginBottom: '1rem',
-          color: '#374151'
+          marginBottom: '1rem'
         }}>
           {children}
         </ul>
@@ -112,8 +111,7 @@ export function ArticleContent({ content }: ArticleContentProps) {
           listStyleType: 'decimal',
           listStylePosition: 'outside',
           paddingLeft: '2rem',
-          marginBottom: '1rem',
-          color: '#374151'
+          marginBottom: '1rem'
         }}>
           {children}
         </ol>
@@ -124,8 +122,7 @@ export function ArticleContent({ content }: ArticleContentProps) {
         <li style={{
           display: 'list-item',
           marginBottom: '0.5rem',
-          lineHeight: '1.6',
-          color: '#374151'
+          lineHeight: '1.6'
         }}>
           {children}
         </li>
@@ -134,8 +131,7 @@ export function ArticleContent({ content }: ArticleContentProps) {
         <li style={{
           display: 'list-item',
           marginBottom: '0.5rem',
-          lineHeight: '1.6',
-          color: '#374151'
+          lineHeight: '1.6'
         }}>
           {children}
         </li>

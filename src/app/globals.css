@@ -36,7 +36,8 @@ body {
 
 /* Prose styling improvements for better readability */
 .prose {
-  @apply text-gray-800 leading-relaxed;
+  color: var(--foreground) !important;
+  @apply leading-relaxed;
 }
 
 .prose h1,
@@ -45,7 +46,8 @@ body {
 .prose h4,
 .prose h5,
 .prose h6 {
-  @apply font-bold text-gray-900 leading-tight;
+  color: var(--foreground) !important;
+  @apply font-bold leading-tight;
 }
 
 .prose h1 {
@@ -61,16 +63,29 @@ body {
 }
 
 .prose p {
+  color: var(--foreground) !important;
   @apply mb-4 leading-7;
 }
 
-.prose ul,
+.prose ul {
+  @apply mb-4;
+  list-style: disc outside !important;
+  padding-left: 2rem !important;
+  color: var(--foreground) !important;
+}
+
 .prose ol {
-  @apply mb-4 pl-6;
+  @apply mb-4;
+  list-style: decimal outside !important;
+  padding-left: 2rem !important;
+  color: var(--foreground) !important;
 }
 
 .prose li {
   @apply mb-2;
+  display: list-item !important;
+  color: var(--foreground) !important;
+  line-height: 1.6 !important;
 }
 
 .prose blockquote {
@@ -122,4 +137,45 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   @apply bg-gray-500;
+}
+
+/* PortableText内のリスト専用スタイル - シンプルなアプローチ */
+.article-content {
+  color: var(--foreground) !important;
+}
+
+.article-content ul {
+  list-style: disc outside !important;
+  margin-left: 0 !important;
+  padding-left: 2rem !important;
+  margin-bottom: 1rem !important;
+  color: var(--foreground) !important;
+}
+
+.article-content ol {
+  list-style: decimal outside !important;
+  margin-left: 0 !important;
+  padding-left: 2rem !important;
+  margin-bottom: 1rem !important;
+  color: var(--foreground) !important;
+}
+
+.article-content li {
+  display: list-item !important;
+  margin-bottom: 0.5rem !important;
+  line-height: 1.6 !important;
+  color: var(--foreground) !important;
+}
+
+.article-content p,
+.article-content h1,
+.article-content h2,
+.article-content h3,
+.article-content h4 {
+  color: var(--foreground) !important;
+}
+
+.article-content li p {
+  margin-bottom: 0 !important;
+  display: inline !important;
 }
