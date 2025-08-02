@@ -1,7 +1,9 @@
 {
-  "buildCommand": "npm run build",
-  "outputDirectory": ".next",
+  "buildCommand": "cd nextjs-yoshibow_blog && npm run build",
+  "outputDirectory": "nextjs-yoshibow_blog/.next",
   "framework": "nextjs",
+  "installCommand": "cd nextjs-yoshibow_blog && npm install",
+  "rootDirectory": "nextjs-yoshibow_blog",
   "rewrites": [
     {
       "source": "/sitemap.xml",
