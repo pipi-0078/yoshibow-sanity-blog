@@ -2,7 +2,7 @@ import { createClient } from "next-sanity";
 
 export const client = createClient({
   projectId: "a4407dxdp8z0m8sfhp4z5ztp",
-  dataset: "production",
+  dataset: "default",
   apiVersion: "2024-05-01",
   useCdn: false,
   perspective: "published",
@@ -11,7 +11,7 @@ export const client = createClient({
 // プレビューモード用のクライアント
 export const previewClient = createClient({
   projectId: "a4407dxdp8z0m8sfhp4z5ztp",
-  dataset: "production", 
+  dataset: "default", 
   apiVersion: "2024-05-01",
   useCdn: false,
   perspective: "drafts", // previewDrafts から drafts に変更
