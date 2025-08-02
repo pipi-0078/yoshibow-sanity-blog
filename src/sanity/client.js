@@ -1,7 +1,7 @@
 import { createClient } from "next-sanity";
 
 export const client = createClient({
-  projectId: "479cjhmz",
+  projectId: "a4407dxdp8z0m8sfhp4z5ztp",
   dataset: "production",
   apiVersion: "2024-05-01",
   useCdn: false,
@@ -10,7 +10,7 @@ export const client = createClient({
 
 // プレビューモード用のクライアント
 export const previewClient = createClient({
-  projectId: "479cjhmz",
+  projectId: "a4407dxdp8z0m8sfhp4z5ztp",
   dataset: "production", 
   apiVersion: "2024-05-01",
   useCdn: false,
