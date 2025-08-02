@@ -21,12 +21,12 @@ export const metadata: Metadata = {
 const POSTS_QUERY = `*[
   _type == "post"
   && defined(slug.current)
-]|order(publishedAt desc)[0...6]{_id, title, slug, publishedAt, image, body[0..1]}`;
+]|order(publishedAt desc)[0...6]{_id, title, slug, publishedAt, image, body[0..1], categories[]->{title, slug}}`;
 
 const FEATURED_POSTS_QUERY = `*[
   _type == "post"
   && defined(slug.current)
-]|order(publishedAt desc)[0...3]{_id, title, slug, publishedAt, image, body[0..1]}`;
+]|order(publishedAt desc)[0...3]{_id, title, slug, publishedAt, image, body[0..1], categories[]->{title, slug}}`;
 
 const options = { next: { revalidate: 30 } };
 
@@ -145,6 +145,18 @@ export default async function IndexPage() {
                       )}
                       
                       <div className="p-6">
+                        {post.categories && post.categories.length > 0 && (
+                          <div className="flex flex-wrap gap-2 mb-3">
+                            {post.categories.slice(0, 2).map((category: any) => (
+                              <span
+                                key={category.slug.current}
+                                className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
+                              >
+                                {category.title}
+                              </span>
+                            ))}
+                          </div>
+                        )}
                         <h3 className={`font-bold text-gray-900 mb-3 line-clamp-2 hover:text-blue-600 transition-colors ${
                           index === 0 ? 'text-2xl lg:text-3xl' : 'text-xl'
                         }`}>
@@ -237,6 +249,18 @@ export default async function IndexPage() {
                     )}
                     
                     <div className="p-6">
+                      {post.categories && post.categories.length > 0 && (
+                        <div className="flex flex-wrap gap-2 mb-3">
+                          {post.categories.slice(0, 2).map((category: any) => (
+                            <span
+                              key={category.slug.current}
+                              className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
+                            >
+                              {category.title}
+                            </span>
+                          ))}
+                        </div>
+                      )}
                       <h3 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2 hover:text-blue-600 transition-colors">
                         {post.title}
                       </h3>

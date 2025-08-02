@@ -1,5 +1,5 @@
 import { draftMode } from 'next/headers'
-import { redirect } from 'next/navigation'
+import { NextResponse } from 'next/server'
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
@@ -13,8 +13,9 @@ export async function GET(request: Request) {
     // Draft Modeを先に有効にする
     draftMode().enable()
     
-    // 記事ページに直接リダイレクト（存在チェックは記事ページ側で行う）
-    redirect(`/${slug}`)
+    // 記事ページに直接リダイレクト（NextResponseを使用）
+    const url = new URL(`/${slug}`, request.url)
+    return NextResponse.redirect(url)
     
   } catch (error) {
     console.error('Preview API error:', error)

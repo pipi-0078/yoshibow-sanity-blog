@@ -3,18 +3,18 @@ import { createClient } from "next-sanity";
 export const client = createClient({
   projectId: "479cjhmz",
   dataset: "production",
-  apiVersion: "2023-05-03",
+  apiVersion: "2024-05-01",
   useCdn: false,
   perspective: "published",
 });
 
-// プレビューモード用のクライアントを通常クライアントと同じ設定にして、クエリで下書きを取得
+// プレビューモード用のクライアント
 export const previewClient = createClient({
   projectId: "479cjhmz",
   dataset: "production", 
-  apiVersion: "2023-05-03",
+  apiVersion: "2024-05-01",
   useCdn: false,
-  perspective: "raw", // raw perspectiveを使用して下書きも取得
+  perspective: "drafts", // previewDrafts から drafts に変更
   ignoreBrowserTokenWarning: true,
   token: process.env.SANITY_API_READ_TOKEN || undefined,
 });
